@@ -20,7 +20,7 @@ export class SampleLineChartTwoComponent implements OnInit {
 
   x0 = [1, 2, 5, 6, 8, 9];
   y0 = [2, 8, 6, 4, 9, 7];
-  x1 = [1, 2, 5, 6, 8, 9];
+  x1 = [1.25, 2.8, 5.3, 6, 8, 9];
   y1 = [5, 7, 9, 5, 6, 4];
 
   constructor() {}
@@ -82,7 +82,7 @@ export class SampleLineChartTwoComponent implements OnInit {
         range: [0, 10], // Adjust based on your data
       },
       responsive: true,
-      showlegend: false,
+      showlegend: true,
       mode: {
         color: '#000000',
       },
