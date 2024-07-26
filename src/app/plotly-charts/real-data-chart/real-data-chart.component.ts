@@ -1,5 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { SwingData } from './types';
+import { ISensorsChartData, Series, SwingData } from './types';
 import { fetchChartData } from './mock-api';
 import { Graph } from '../types';
 import { PlotlyModule } from 'angular-plotly.js';
@@ -14,17 +14,57 @@ import { PlotlyModule } from 'angular-plotly.js';
 export class RealDataChartComponent implements OnInit {
   chartData = signal<SwingData | undefined>(undefined);
   graph = signal<Graph | undefined>(undefined);
+  transformedData = signal<ISensorsChartData[]>([]);
+  yAxisTicks = signal<number[]>([0, 25, 50, 75, 100]);
+  yAxisTickTexts = signal<string[]>(['0%', '25%', '50%', '75%', '100%']);
   x0 = signal<number[]>([]);
   y0 = signal<number[]>([]);
   x1 = signal<number[]>([]);
   y1 = signal<number[]>([]);
 
+  sensorsDataToPercentageChartData(
+    sensorsData: SwingData
+  ): ISensorsChartData[] {
+    const series: ISensorsChartData[] = [
+      {
+        name: 'Left',
+        series: [],
+      },
+      {
+        name: 'Right',
+        series: [],
+      },
+    ];
+    sensorsData.sensorsData.forEach((s) => {
+      const name = s.t;
+      const leftValue = s.l.reduce((acc, curr) => acc + curr, 0);
+      const rightValue = s.r.reduce((acc, curr) => acc + curr, 0);
+
+      const sum = leftValue + rightValue;
+      let leftSeriesValue = 0;
+      let rightSeriesValue = 0;
+
+      if (sum) {
+        leftSeriesValue = Math.floor((leftValue * 100) / sum);
+        rightSeriesValue = 100 - leftSeriesValue;
+      }
+
+      series[0].series.push({
+        name,
+        value: leftSeriesValue,
+      });
+      series[1].series.push({
+        name,
+        value: rightSeriesValue,
+      });
+    });
+    return series;
+  }
+
   updateGraph(): void {
     this.graph.set({
       data: [
         {
-          // x: this.chartData()[0]?.series.map((s: Series) => s.name) || [],
-          // y: this.chartData()[1]?.series.map((s: Series) => s.value) || [],
           x: this.x0(),
           y: this.y0(),
           type: 'scatter',
@@ -40,8 +80,6 @@ export class RealDataChartComponent implements OnInit {
           hoverinfo: 'none',
         },
         {
-          // x: this.chartData()[1]?.series.map((s: Series) => s.name) || [], // X values from the Right series
-          // y: this.chartData()[1]?.series.map((s: Series) => s.value) || [], // Y values from the Right series
           x: this.x1(),
           y: this.y1(),
           type: 'scatter',
@@ -113,35 +151,23 @@ export class RealDataChartComponent implements OnInit {
           this.chartData()?.sensorsData.map((s) => s.cpl.x)
         );
         this.x0.set(
-          // this.chartData()?.sensorsData.map((s) =>
-          //   Number(s.cpl.x.toFixed(3))
-          // ) ||
-          [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+          this.transformedData()[0]?.series?.map((s) => s.name) || []
         );
         this.y0.set(
-          // this.chartData()?.sensorsData.map((s) =>
-          //   Number(s.cpl.y.toFixed(3))
-          // ) ||
-          [3.1, 6.3, 1.6, 9.4, 4.7, 7.1, 2.2, 5.5, 8.9, 1.4]
+          this.transformedData()[1]?.series?.map((s) => s.value) || []
         );
         this.x1.set(
-          // this.chartData()?.sensorsData.map((s) =>
-          //   Number(s.cpr.x.toFixed(3))
-          // ) ||
-          [6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5]
+          this.transformedData()[0]?.series?.map((s) => s.name) || []
         );
         this.y1.set(
-          // this.chartData()?.sensorsData.map((s) =>
-          //   Number(s.cpr.y.toFixed(3))
-          // ) ||
-          [7.7, 3.3, 8.9, 2.2, 10.0, 1.1, 6.7, 4.4, 5.6, 3.9]
+          this.transformedData()[1]?.series?.map((s) => s.value) || []
         );
+        this.updateGraph();
+        this.transformedData.set(this.sensorsDataToPercentageChartData(data));
       },
       error: (err) => {
         console.log(err);
       },
     });
-
-    this.updateGraph();
   }
 }

@@ -16,13 +16,15 @@ export interface Marker {
 
 export interface Line {
   color?: string;
+  shape?: string | 'spline';
   width?: number;
+  smoothing?: number;
   dash?: string; // 'solid', 'dot', 'dash', etc.
 }
 
 export interface Trace {
-  x: number[] | string[];
-  y: number[] | string[];
+  x: number[];
+  y: number[];
   type:
     | 'scatter'
     | 'bar'
@@ -116,6 +118,7 @@ interface Annotation {
 }
 
 interface Layout {
+  modebar_add?: string[];
   mode?: {
     color?: string;
   };
@@ -131,13 +134,15 @@ interface Layout {
     title?: string; // X-axis title
     titlefont?: TitleFont; // Font settings for the x-axis title
     showline?: boolean;
+    range?: string[] | number[];
     tickvals?: string[] | number[];
     ticktext?: string[] | number[];
     zeroline?: boolean;
     showgrid?: boolean;
   };
   yaxis?: {
-    title?: string; // Y-axis title
+    title?: string;
+    range?: string[] | number[]; // Y-axis title
     titlefont?: TitleFont; // Font settings for the y-axis title
     showline?: boolean;
     showgrid?: boolean;
@@ -154,6 +159,11 @@ interface Layout {
     y0?: number; // Starting y coordinate
     x1?: number; // Ending x coordinate
     y1?: number; // Ending y coordinate
+    line?: {
+      color?: string;
+      width?: number | string;
+    };
+    layer: string;
   }[];
   responsive?: boolean;
   annotations?: Annotation[]; // Array of annotations

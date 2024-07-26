@@ -8,15 +8,15 @@ export function generateDummyData(): ChartDataArray {
   for (let i = 1; i <= 50; i++) {
     leftSeries.push({
       name: i, // Series name as a number
-      value: Math.floor(Math.random() * 5000), // Random value between 0 and 99
+      value: Math.floor(Math.random() * 6), // Random value between 0 and 99
     });
   }
 
   // Generate 50 series for "Right"
   for (let i = 1; i <= 50; i++) {
     rightSeries.push({
-      name: i, // Series name as a number (51 to 100)
-      value: Math.floor(Math.random() * 5000), // Random value between 0 and 99
+      name: i+2, // Series name as a number (51 to 100)
+      value: Math.floor(Math.random() * 15), // Random value between 0 and 99
     });
   }
 
