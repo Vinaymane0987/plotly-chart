@@ -1,4 +1,11 @@
-import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ChartData, Series } from './types';
 import { fetchChartData } from './mock-api';
 import { Graph } from '../types';
@@ -16,9 +23,9 @@ export class SampleLineChartTwoComponent implements OnInit {
   chartData = signal<ChartData[]>([]);
   indexVar = signal(0);
   private subscription: Subscription = new Subscription();
-  x0 = [1, 2, 5, 6, 8, 9];
+  x0 = [1.25, 2.8, 5.3, 6, 8, 9];
   y0 = [2, 8, 6, 4, 9, 7];
-  x1 = [1, 2, 5, 6, 8, 9];
+  x1 = [1.25, 2.8, 5.3, 6, 8, 9];
   y1 = [5, 7, 9, 5, 6, 4];
 
   constructor() {
@@ -88,7 +95,7 @@ export class SampleLineChartTwoComponent implements OnInit {
         range: [0, 10], // Adjust based on your data
       },
       responsive: true,
-      showlegend: false,
+      showlegend: true,
       mode: {
         color: '#000000',
       },
