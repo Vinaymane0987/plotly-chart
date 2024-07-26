@@ -23,8 +23,8 @@ export interface Line {
 }
 
 export interface Trace {
-  x: number[] | string[];
-  y: number[] | string[];
+  x: number[];
+  y: number[];
   type:
     | 'scatter'
     | 'bar'

@@ -1,1 +1,12 @@
-<p>real-data-chart works!</p>
+<div
+  class="w-full relative rounded-3xl box-border p-2 border-red-400 border-4 shadow-lg"
+>
+  <plotly-plot
+    [data]="graph()?.data"
+    [config]="graph()?.config"
+    [layout]="graph()?.layout"
+    [useResizeHandler]="true"
+    class="h-[520px] w-full"
+  >
+  </plotly-plot>
+</div>

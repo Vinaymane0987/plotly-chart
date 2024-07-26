@@ -1,6 +1,6 @@
 import { delay, Observable, of } from 'rxjs';
-import {responseData} form './response.js'
 import { SwingData } from './types';
+import { responseData } from './response';
 
 // Function to simulate an API call
 export function fetchChartData(): Observable<SwingData> {

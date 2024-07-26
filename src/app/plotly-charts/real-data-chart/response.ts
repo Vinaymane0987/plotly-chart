@@ -1,4 +1,6 @@
-export const responseData = {
+import {SwingData} from './types.js'
+
+export const responseData  : SwingData = {
     "positions": {
       "backswingAI": 16620,
       "address": 15552,
