@@ -12,38 +12,6 @@ import { BehaviorSubject } from 'rxjs';
   styleUrl: './smaple-line-chart.component.scss',
 })
 export class SmapleLineChartComponent {
-  //  graph = signal<Graph>({
-  //   data: [
-  //     {
-  //       x: [1, 2, 3],
-  //       y: [2, 6, 3],
-  //       type: 'scatter',
-  //       mode: 'lines+markers',
-  //       marker: { color: 'red' },
-  //       name: 'Line 1',
-  //     },
-  //   ],
-  //   layout: {
-  //     title: 'My Plotly Chart',
-  //     xaxis: { title: 'X Axis' },
-  //     yaxis: { title: 'Y Axis' },
-  //   },
-  //   config: {
-  //     displaylogo: false,
-  //     staticPlot: false,
-  //     editable: true,
-  //     displayModeBar: true,
-  //     modeBarButtonsToRemove: [
-  //       'toImage',
-  //       'zoom2d',
-  //       'select2d',
-  //       'lasso2d',
-  //       'resetScale2d',
-  //     ],
-  //     scrollZoom: true,
-  //   },
-  // });
-
   private graphSubject = new BehaviorSubject<Graph>({
     data: [
       {
