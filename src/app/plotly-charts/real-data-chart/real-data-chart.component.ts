@@ -3,6 +3,7 @@ import { ISensorsChartData, Series, SwingData } from './types';
 import { fetchChartData } from './mock-api';
 import { Graph } from '../types';
 import { PlotlyModule } from 'angular-plotly.js';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-real-data-chart',
@@ -17,6 +18,10 @@ export class RealDataChartComponent implements OnInit {
   transformedData = signal<ISensorsChartData[]>([]);
   yAxisTicks = signal<number[]>([0, 25, 50, 75, 100]);
   yAxisTickTexts = signal<string[]>(['0%', '25%', '50%', '75%', '100%']);
+  // private subscription: Subscription = new Subscription();
+  // private intervalId: any;
+  // index: number = 0;
+
   x0 = signal<number[]>([]);
   y0 = signal<number[]>([]);
   x1 = signal<number[]>([]);
@@ -95,8 +100,11 @@ export class RealDataChartComponent implements OnInit {
           hoverinfo: 'none',
         },
         // {
-        //   x: [this.x0[0], this.x0[0]], // Start with the first x-value
-        //   y: [Math.min(...this.y0, ...this.y1), Math.max(...this.y0, ...this.y1)], // Span the entire y-range
+        //   x: [this.x0()[0], this.x0()[0]], // Start with the first x-value
+        //   y: [
+        //     Math.min(...this.y0(), ...this.y1()),
+        //     Math.max(...this.y0(), ...this.y1()),
+        //   ], // Span the entire y-range
         //   type: 'scatter',
         //   mode: 'lines',
         //   line: {
@@ -112,11 +120,11 @@ export class RealDataChartComponent implements OnInit {
         title: 'Pressure Balance Graph',
         yaxis: {
           title: 'Y Axis',
-          range: [0, 10],
+          // range: [0, 10],
         },
         xaxis: {
           title: 'X Axis',
-          range: [0, 10], // Adjust based on your data
+          // range: [0, 10], // Adjust based on your data
         },
         responsive: true,
         showlegend: true,
@@ -146,28 +154,61 @@ export class RealDataChartComponent implements OnInit {
       next: (data: SwingData) => {
         this.chartData.set(data);
         console.log('chart data', this.chartData());
-        console.log(
-          'x data',
-          this.chartData()?.sensorsData.map((s) => s.cpl.x)
-        );
+        this.transformedData.set(this.sensorsDataToPercentageChartData(data));
         this.x0.set(
           this.transformedData()[0]?.series?.map((s) => s.name) || []
         );
         this.y0.set(
-          this.transformedData()[1]?.series?.map((s) => s.value) || []
+          this.transformedData()[0]?.series?.map((s) => s.value) || []
         );
         this.x1.set(
-          this.transformedData()[0]?.series?.map((s) => s.name) || []
+          this.transformedData()[1]?.series?.map((s) => s.name) || []
         );
         this.y1.set(
           this.transformedData()[1]?.series?.map((s) => s.value) || []
         );
         this.updateGraph();
-        this.transformedData.set(this.sensorsDataToPercentageChartData(data));
       },
       error: (err) => {
         console.log(err);
       },
     });
+
+    // this.intervalId = setInterval(() => {
+    //   this.index = (this.index + 1) % this.x0.length; // Loop back to 0 when reaching the end
+    //   this.updateGraphIndicator();
+    // });
   }
+
+  // updateGraphIndicator() {
+  //   // Update the vertical line in the graph based on the current index
+  //   this.graph.update((graph: Graph | undefined) => {
+  //     if (graph) {
+  //       return {
+  //         ...graph,
+  //         data: [
+  //           ...graph.data.slice(0, 2), // Keep the first two traces
+  //           {
+  //             x: [this.x0()[this.index], this.x1()[this.index]], // Update x values
+  //             y: [this.y0()[this.index], this.y1()[this.index]], // Update y values
+  //             type: 'scatter',
+  //             mode: 'lines',
+  //             line: {
+  //               color: 'black',
+  //               width: 4,
+  //             },
+  //             showlegend: false,
+  //             hoverinfo: 'none',
+  //           },
+  //         ],
+  //       };
+  //     }
+  //     return graph; // Add a default return value
+  //   });
+  // }
+
+  // ngOnDestroy(): void {
+  //   // Clear the interval when the component is destroyed
+  //   clearInterval(this.intervalId);
+  // }
 }
