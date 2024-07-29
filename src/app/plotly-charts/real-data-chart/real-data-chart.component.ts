@@ -18,6 +18,9 @@ export class RealDataChartComponent implements OnInit {
   transformedData = signal<ISensorsChartData[]>([]);
   yAxisTicks = signal<number[]>([0, 25, 50, 75, 100]);
   yAxisTickTexts = signal<string[]>(['0%', '25%', '50%', '75%', '100%']);
+  currentIndex = signal(0);
+  intervalId: any;
+
   // private subscription: Subscription = new Subscription();
   // private intervalId: any;
   // index: number = 0;
@@ -99,32 +102,30 @@ export class RealDataChartComponent implements OnInit {
           },
           hoverinfo: 'none',
         },
-        // {
-        //   x: [this.x0()[0], this.x0()[0]], // Start with the first x-value
-        //   y: [
-        //     Math.min(...this.y0(), ...this.y1()),
-        //     Math.max(...this.y0(), ...this.y1()),
-        //   ], // Span the entire y-range
-        //   type: 'scatter',
-        //   mode: 'lines',
-        //   line: {
-        //     color: 'gray',
-        //     width: 2,
-        //     dash: 'dot',
-        //   },
-        //   showlegend: false,
-        //   hoverinfo: 'none',
-        // },
+        // indicator line
+        {
+          x: [this.x0()[this.currentIndex()], this.x1()[this.currentIndex()]],
+          y: [this.y0()[this.currentIndex()], this.y1()[this.currentIndex()]],
+          type: 'scatter',
+          mode: 'lines',
+          line: {
+            color: 'blue',
+            width: 3,
+            // dash: 'dot',
+          },
+          showlegend: false,
+          hoverinfo: 'none',
+        },
       ],
       layout: {
         title: 'Pressure Balance Graph',
         yaxis: {
           title: 'Y Axis',
-          // range: [0, 10],
+          // range: [10, 200],
         },
         xaxis: {
           title: 'X Axis',
-          // range: [0, 10], // Adjust based on your data
+          // range: [0, 200], // Adjust based on your data
         },
         responsive: true,
         showlegend: true,
@@ -173,42 +174,13 @@ export class RealDataChartComponent implements OnInit {
         console.log(err);
       },
     });
-
-    // this.intervalId = setInterval(() => {
-    //   this.index = (this.index + 1) % this.x0.length; // Loop back to 0 when reaching the end
-    //   this.updateGraphIndicator();
-    // });
+    this.intervalId = setInterval(() => {
+      this.currentIndex.update((val) => val + 1);
+      this.updateGraph();
+    }, 300);
   }
 
-  // updateGraphIndicator() {
-  //   // Update the vertical line in the graph based on the current index
-  //   this.graph.update((graph: Graph | undefined) => {
-  //     if (graph) {
-  //       return {
-  //         ...graph,
-  //         data: [
-  //           ...graph.data.slice(0, 2), // Keep the first two traces
-  //           {
-  //             x: [this.x0()[this.index], this.x1()[this.index]], // Update x values
-  //             y: [this.y0()[this.index], this.y1()[this.index]], // Update y values
-  //             type: 'scatter',
-  //             mode: 'lines',
-  //             line: {
-  //               color: 'black',
-  //               width: 4,
-  //             },
-  //             showlegend: false,
-  //             hoverinfo: 'none',
-  //           },
-  //         ],
-  //       };
-  //     }
-  //     return graph; // Add a default return value
-  //   });
-  // }
-
-  // ngOnDestroy(): void {
-  //   // Clear the interval when the component is destroyed
-  //   clearInterval(this.intervalId);
-  // }
+  ngOnDestroy() {
+    clearInterval(this.intervalId);
+  }
 }
