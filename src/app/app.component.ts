@@ -9,6 +9,6 @@ import { PlotlyChartsComponent } from "./plotly-charts/plotly-charts.component";
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent { 
   title = 'plotly-charts';
 }
